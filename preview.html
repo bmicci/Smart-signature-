@@ -3,305 +3,716 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Smart Signature — Preview &amp; Setup</title>
+<title>Executive Email Signature — Brandon Micci</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+  :root {
+    --ink: #1a1a2e;
+    --ink-soft: #3d3d56;
+    --ink-muted: #6b6b82;
+    --accent: #0a4d8c;
+    --accent-deep: #062d54;
+    --accent-hover: #0b5ea8;
+    --accent-light: #e8f1fa;
+    --surface: #ffffff;
+    --border: #e2e5ec;
+    --border-light: #f0f1f5;
+    --gradient-start: #0a4d8c;
+    --gradient-end: #1a7ac4;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: #0a0e27;
-    color: #e2e8f0;
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #f4f5f7;
     min-height: 100vh;
-  }
-
-  /* Header — matches brandonmicci.com hero gradient */
-  .header {
-    text-align: center;
-    padding: 48px 24px 32px;
-    background: linear-gradient(180deg, #0d1a2f 0%, #0a0e27 100%);
-    border-bottom: 1px solid rgba(0,212,255,0.12);
-  }
-  .header h1 {
-    font-size: 32px;
-    font-weight: 800;
-    background: linear-gradient(135deg, #00d4ff, #1e90ff, #3B82F6);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 8px;
-    letter-spacing: -0.02em;
-  }
-  .header p {
-    color: #94a3b8;
-    font-size: 15px;
-    max-width: 500px;
-    margin: 0 auto;
-  }
-
-  /* Mode Toggle */
-  .mode-toggle {
     display: flex;
-    justify-content: center;
-    gap: 12px;
-    padding: 24px;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    color: var(--ink);
   }
-  .mode-btn {
-    padding: 10px 24px;
-    border-radius: 8px;
-    border: 1px solid rgba(0,212,255,0.15);
-    background: rgba(255,255,255,0.03);
-    color: #94a3b8;
-    font-size: 13px;
+  /* ─── Page Header ─── */
+  .page-header {
+    text-align: center;
+    margin-bottom: 48px;
+    max-width: 560px;
+  }
+  .page-header h1 {
+    font-family: 'EB Garamond', serif;
+    font-size: 32px;
     font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
+    color: var(--ink);
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
   }
-  .mode-btn.active {
-    background: linear-gradient(135deg, #00d4ff, #1e90ff);
-    color: #0a0e27;
-    border-color: #00d4ff;
+  .page-header p {
+    font-size: 14px;
+    color: var(--ink-muted);
+    line-height: 1.5;
   }
-  .mode-btn:hover:not(.active) {
-    border-color: rgba(0,212,255,0.35);
-    color: #e2e8f0;
-    background: rgba(0,212,255,0.06);
-  }
-
-  /* Preview Container */
-  .preview-container {
-    max-width: 720px;
-    margin: 0 auto 48px;
-    padding: 0 24px;
-  }
-  .preview-frame {
-    border-radius: 12px;
+  /* ─── Variant Tabs ─── */
+  .variant-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 40px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 25px 50px rgba(0,0,0,0.4);
-    transition: background 0.3s;
+    background: white;
   }
-  .preview-frame.light {
-    background: #f0f4f8;
-    padding: 32px;
+  .variant-tab {
+    padding: 10px 24px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--ink-muted);
+    transition: all 0.2s;
+    font-family: inherit;
+    position: relative;
   }
-  .preview-frame.dark {
-    background: #0a0e27;
-    padding: 32px;
+  .variant-tab:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 25%;
+    height: 50%;
+    width: 1px;
+    background: var(--border);
   }
-  .preview-frame iframe {
+  .variant-tab.active {
+    background: var(--accent);
+    color: white;
+  }
+  .variant-tab:hover:not(.active) {
+    background: var(--accent-light);
+    color: var(--accent);
+  }
+  /* ─── Email Preview Shell ─── */
+  .sig-showcase {
     width: 100%;
-    height: 520px;
+    max-width: 720px;
+  }
+  .sig-variant {
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+  .sig-variant.active { display: block; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .email-preview {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.04);
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .email-chrome {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border-light);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .email-chrome .dots { display: flex; gap: 6px; }
+  .email-chrome .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border); }
+  .email-chrome .subject { font-size: 13px; color: var(--ink-muted); font-weight: 500; }
+  .email-body { padding: 32px 40px; }
+  .email-placeholder { margin-bottom: 32px; }
+  .email-placeholder span {
+    display: block; height: 10px; background: #f0f1f5;
+    border-radius: 4px; margin-bottom: 10px;
+  }
+  .email-placeholder span:nth-child(1) { width: 85%; }
+  .email-placeholder span:nth-child(2) { width: 72%; }
+  .email-placeholder span:nth-child(3) { width: 60%; }
+  .email-placeholder span:nth-child(4) { width: 40%; margin-bottom: 0; }
+  /* ─────────────────────────────────────────── */
+  /* SIGNATURE: MINIMAL + HEADSHOT + ICONS       */
+  /* ─────────────────────────────────────────── */
+  .sig {
+    padding-top: 20px;
+    font-family: 'DM Sans', -apple-system, sans-serif;
+    position: relative;
+  }
+  /* Top accent bar — subtle gradient */
+  .sig .sig-bar {
+    height: 3px;
+    background: linear-gradient(90deg, var(--gradient-start) 0%, var(--gradient-end) 40%, var(--border-light) 40%);
+    border-radius: 2px;
+    margin-bottom: 18px;
+  }
+  /* Main row: photo + info */
+  .sig .sig-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+  }
+  /* Headshot */
+  .sig .sig-photo {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 2.5px solid var(--accent);
+    background: var(--accent-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .sig .sig-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  /* Placeholder when no photo */
+  .sig .sig-photo-placeholder {
+    font-family: 'EB Garamond', serif;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--accent);
+    line-height: 1;
+  }
+  /* Info block */
+  .sig .sig-info { flex: 1; min-width: 0; }
+  .sig .sig-name {
+    font-family: 'EB Garamond', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.3px;
+    line-height: 1.2;
+    margin-bottom: 2px;
+  }
+  .sig .sig-title {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--accent);
+    line-height: 1.3;
+    margin-bottom: 1px;
+  }
+  .sig .sig-subtitle {
+    font-size: 11.5px;
+    color: var(--ink-muted);
+    font-weight: 400;
+    margin-bottom: 12px;
+  }
+  /* Contact line */
+  .sig .sig-contact {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 14px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-bottom: 14px;
+  }
+  .sig .sig-contact a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .sig .sig-contact a:hover { text-decoration: underline; }
+  .sig .sig-contact .sep {
+    color: var(--border);
+    font-size: 10px;
+  }
+  /* Divider */
+  .sig .sig-divider-line {
+    height: 1px;
+    background: var(--border-light);
+    margin-bottom: 12px;
+  }
+  /* Icon row */
+  .sig .sig-icons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .sig .sig-icon-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--ink-muted);
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  .sig .sig-icon-link:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-light);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(10,77,140,0.1);
+  }
+  .sig .sig-icon-link svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+  }
+  /* ─────────────────────────────────────────── */
+  /* VARIANT B: WITH STATS ROW                   */
+  /* ─────────────────────────────────────────── */
+  .sig-with-stats .sig-stats {
+    display: flex;
+    gap: 20px;
+    padding-top: 12px;
+    margin-top: 2px;
+  }
+  .sig-with-stats .sig-stat-value {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--accent-deep);
+    font-family: 'Outfit', sans-serif;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+  }
+  .sig-with-stats .sig-stat-label {
+    font-size: 9.5px;
+    font-weight: 500;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  /* ─────────────────────────────────────────── */
+  /* VARIANT C: WITH TAGLINE                     */
+  /* ─────────────────────────────────────────── */
+  .sig-with-tagline .sig-tagline {
+    font-size: 11.5px;
+    color: var(--ink-muted);
+    font-style: italic;
+    font-family: 'EB Garamond', serif;
+    padding-top: 12px;
+    margin-top: 2px;
+    border-top: 1px solid var(--border-light);
+    letter-spacing: 0.1px;
+    line-height: 1.5;
+  }
+  /* ─── Copy & Notes ─── */
+  .copy-section {
+    margin-top: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  .copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 28px;
+    background: var(--accent);
+    color: white;
     border: none;
     border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
   }
-
-  /* Setup Section — glass card style from brandonmicci.com */
-  .setup-section {
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 0 24px 64px;
+  .copy-btn:hover {
+    background: var(--accent-deep);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(10,77,140,0.2);
   }
-  .setup-section h2 {
-    font-size: 22px;
-    font-weight: 700;
-    color: #e2e8f0;
-    margin-bottom: 24px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid rgba(0,212,255,0.12);
-  }
-  .step {
-    margin-bottom: 24px;
-    padding: 20px;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(0,212,255,0.12);
-    border-radius: 10px;
-    transition: border-color 0.2s, background 0.2s;
-  }
-  .step:hover {
-    border-color: rgba(0,212,255,0.25);
-    background: rgba(255,255,255,0.05);
-  }
-  .step-number {
-    display: inline-block;
-    width: 28px;
-    height: 28px;
-    line-height: 28px;
-    text-align: center;
-    background: linear-gradient(135deg, #00d4ff, #1e90ff);
-    color: #0a0e27;
-    font-weight: 800;
-    font-size: 13px;
-    border-radius: 50%;
-    margin-right: 10px;
-  }
-  .step h3 {
-    display: inline;
-    font-size: 15px;
-    color: #e2e8f0;
-  }
-  .step p {
-    margin-top: 10px;
-    font-size: 13px;
-    color: #94a3b8;
-    line-height: 1.7;
-  }
-  .step code {
-    background: rgba(0,212,255,0.08);
-    color: #00d4ff;
-    padding: 2px 6px;
-    border-radius: 4px;
+  .copy-btn.copied { background: #1a7a3a; }
+  .copy-hint {
     font-size: 12px;
-    border: 1px solid rgba(0,212,255,0.12);
-  }
-
-  .client-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-top: 12px;
-  }
-  .client-card {
-    padding: 14px;
-    background: rgba(0,212,255,0.04);
-    border: 1px solid rgba(0,212,255,0.1);
-    border-radius: 8px;
+    color: var(--ink-muted);
     text-align: center;
-    transition: border-color 0.2s;
+    line-height: 1.5;
+    max-width: 420px;
   }
-  .client-card:hover {
-    border-color: rgba(0,212,255,0.25);
+  /* ─── Photo Upload Area ─── */
+  .photo-upload-section {
+    margin-top: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
   }
-  .client-card strong {
-    display: block;
+  .photo-upload-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border: 1.5px dashed var(--border);
+    border-radius: 8px;
     font-size: 13px;
-    color: #e2e8f0;
-    margin-bottom: 4px;
+    color: var(--ink-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
   }
-  .client-card span {
+  .photo-upload-label:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-light);
+  }
+  .photo-upload-label svg {
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+  }
+  #photoUpload { display: none; }
+  /* ─── Customization Panel ─── */
+  .customize-panel {
+    margin-top: 40px;
+    width: 100%;
+    max-width: 720px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 28px;
+  }
+  .customize-panel h3 {
+    font-family: 'EB Garamond', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 16px;
+  }
+  .customize-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .customize-row:last-child { margin-bottom: 0; }
+  .customize-label {
     font-size: 11px;
-    color: #94a3b8;
+    font-weight: 600;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    display: block;
+    width: 100%;
   }
-
-  .features-list {
-    list-style: none;
-    margin-top: 12px;
+  .toggle-chip {
+    padding: 7px 16px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 12.5px;
+    font-weight: 500;
+    cursor: pointer;
+    background: white;
+    color: var(--ink-soft);
+    transition: all 0.15s;
+    font-family: inherit;
   }
-  .features-list li {
-    padding: 6px 0;
-    font-size: 13px;
-    color: #94a3b8;
-    border-bottom: 1px solid rgba(0,212,255,0.08);
+  .toggle-chip:hover {
+    border-color: var(--accent);
+    color: var(--accent);
   }
-  .features-list li:last-child { border-bottom: none; }
-  .features-list li::before {
-    content: ">";
-    color: #00d4ff;
-    font-weight: 800;
-    margin-right: 8px;
+  .toggle-chip.active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
   }
 </style>
 </head>
 <body>
-
-<div class="header">
-  <h1>Smart Email Signature</h1>
-  <p>Dynamic, executive-grade HTML signature with AI-themed visuals, animated accents, and dark mode support.</p>
+<div class="page-header">
+  <h1>Executive Email Signature</h1>
+  <p>Minimal authority layout with headshot, icon row, and optional extras. Designed for CDAO-level executive positioning.</p>
 </div>
-
-<div class="mode-toggle">
-  <button class="mode-btn active" onclick="setMode('light')">Light Mode</button>
-  <button class="mode-btn" onclick="setMode('dark')">Dark Mode</button>
+<div class="variant-tabs">
+  <button class="variant-tab active" onclick="showVariant('clean')">Clean</button>
+  <button class="variant-tab" onclick="showVariant('stats')">With Stats</button>
+  <button class="variant-tab" onclick="showVariant('tagline')">With Tagline</button>
 </div>
-
-<div class="preview-container">
-  <div class="preview-frame light" id="previewFrame">
-    <iframe src="signature.html" id="sigFrame" title="Signature Preview"></iframe>
-  </div>
-</div>
-
-<div class="setup-section">
-  <h2>Setup Guide</h2>
-
-  <div class="step">
-    <span class="step-number">1</span>
-    <h3>Personalize Your Signature</h3>
-    <p>Open <code>signature.html</code> in any text editor. Search for <code>&lt;!-- EDIT --&gt;</code> comments to find every field you should customize: name, title, email, website, location, metrics, social links, and the AI insight quote.</p>
-  </div>
-
-  <div class="step">
-    <span class="step-number">2</span>
-    <h3>Add Your Photo</h3>
-    <p>Replace the placeholder SVG avatar with your headshot. Find the avatar section (search for "Replace with your hosted headshot") and swap in an <code>&lt;img&gt;</code> tag pointing to a hosted image URL. Recommended size: <code>72x72px</code>, hosted on a reliable CDN or your company server.</p>
-  </div>
-
-  <div class="step">
-    <span class="step-number">3</span>
-    <h3>Install in Your Email Client</h3>
-    <p>Open <code>signature.html</code> in a browser, then select all (Ctrl/Cmd+A) and copy (Ctrl/Cmd+C). Paste directly into your email client's signature editor:</p>
-    <div class="client-grid">
-      <div class="client-card">
-        <strong>Gmail</strong>
-        <span>Settings > See all settings > Signature > Paste</span>
+<div class="sig-showcase">
+  <!-- VARIANT A: CLEAN -->
+  <div class="sig-variant active" id="variant-clean">
+    <div class="email-preview">
+      <div class="email-chrome">
+        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <span class="subject">Re: AI Governance Framework — Executive Review</span>
       </div>
-      <div class="client-card">
-        <strong>Outlook</strong>
-        <span>Settings > Mail > Compose > Email signature > Paste</span>
-      </div>
-      <div class="client-card">
-        <strong>Apple Mail</strong>
-        <span>Preferences > Signatures > Create new > Paste</span>
-      </div>
-      <div class="client-card">
-        <strong>Thunderbird</strong>
-        <span>Account Settings > Signature text > Use HTML > Paste source</span>
+      <div class="email-body">
+        <div class="email-placeholder">
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <div class="sig" id="sig-clean">
+          <div class="sig-bar"></div>
+          <div class="sig-row">
+            <div class="sig-photo">
+              <span class="sig-photo-placeholder">BM</span>
+            </div>
+            <div class="sig-info">
+              <div class="sig-name">Brandon Micci</div>
+              <div class="sig-title">Head of AI Strategy &amp; Business Transformation</div>
+              <div class="sig-subtitle">Enterprise AI &amp; Digital Transformation Executive</div>
+              <div class="sig-contact">
+                <a href="mailto:brandon@brandonmicci.com">brandon@brandonmicci.com</a>
+                <span class="sep">·</span>
+                <span>Washington, D.C. Metro</span>
+              </div>
+              <div class="sig-divider-line"></div>
+              <div class="sig-icons">
+                <!-- Email -->
+                <a href="mailto:brandon@brandonmicci.com" class="sig-icon-link" title="Email">
+                  <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" fill="none" stroke="currentColor" stroke-width="1.8"/><polyline points="22,6 12,13 2,6" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+                </a>
+                <!-- Website -->
+                <a href="https://brandonmicci.com" class="sig-icon-link" title="Website">
+                  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.8"/><ellipse cx="12" cy="12" rx="4.5" ry="10" fill="none" stroke="currentColor" stroke-width="1.8"/><line x1="2" y1="12" x2="22" y2="12" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+                </a>
+                <!-- LinkedIn -->
+                <a href="https://linkedin.com/in/brandonmicci" class="sig-icon-link" title="LinkedIn">
+                  <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="2" y="9" width="4" height="12" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="4" cy="4" r="2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+                </a>
+                <!-- X / Twitter -->
+                <a href="https://x.com/brandonmicci" class="sig-icon-link" title="X">
+                  <svg viewBox="0 0 24 24"><path d="M4 4l6.5 8L4 20h2l5.5-6.8L16 20h4l-6.8-8.5L20 4h-2l-5.2 6.3L8 4H4z" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-
-  <div class="step">
-    <span class="step-number">4</span>
-    <h3>Keep It Dynamic</h3>
-    <p>Update these elements quarterly to keep your signature fresh and relevant:</p>
-    <ul class="features-list">
-      <li><strong>AI Insight quote</strong> — rotate a new data/AI insight each quarter</li>
-      <li><strong>Metrics dashboard</strong> — update with latest achievement numbers</li>
-      <li><strong>CTA banner</strong> — swap in your next speaking event, publication, or initiative</li>
-      <li><strong>Status indicator</strong> — set to "Available" / "Traveling" / "In Conference"</li>
-    </ul>
+  <!-- VARIANT B: WITH STATS -->
+  <div class="sig-variant" id="variant-stats">
+    <div class="email-preview">
+      <div class="email-chrome">
+        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <span class="subject">Re: AI Platform Scaling — Q2 Roadmap</span>
+      </div>
+      <div class="email-body">
+        <div class="email-placeholder">
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <div class="sig sig-with-stats" id="sig-stats">
+          <div class="sig-bar"></div>
+          <div class="sig-row">
+            <div class="sig-photo">
+              <span class="sig-photo-placeholder">BM</span>
+            </div>
+            <div class="sig-info">
+              <div class="sig-name">Brandon Micci</div>
+              <div class="sig-title">Head of AI Strategy &amp; Business Transformation</div>
+              <div class="sig-subtitle">Enterprise AI &amp; Digital Transformation Executive</div>
+              <div class="sig-contact">
+                <a href="mailto:brandon@brandonmicci.com">brandon@brandonmicci.com</a>
+                <span class="sep">·</span>
+                <span>Washington, D.C. Metro</span>
+              </div>
+              <div class="sig-divider-line"></div>
+              <div class="sig-icons">
+                <a href="mailto:brandon@brandonmicci.com" class="sig-icon-link" title="Email">
+                  <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" fill="none" stroke="currentColor" stroke-width="1.8"/><polyline points="22,6 12,13 2,6" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+                </a>
+                <a href="https://brandonmicci.com" class="sig-icon-link" title="Website">
+                  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.8"/><ellipse cx="12" cy="12" rx="4.5" ry="10" fill="none" stroke="currentColor" stroke-width="1.8"/><line x1="2" y1="12" x2="22" y2="12" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+                </a>
+                <a href="https://linkedin.com/in/brandonmicci" class="sig-icon-link" title="LinkedIn">
+                  <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="2" y="9" width="4" height="12" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="4" cy="4" r="2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+                </a>
+                <a href="https://x.com/brandonmicci" class="sig-icon-link" title="X">
+                  <svg viewBox="0 0 24 24"><path d="M4 4l6.5 8L4 20h2l5.5-6.8L16 20h4l-6.8-8.5L20 4h-2l-5.2 6.3L8 4H4z" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+                </a>
+              </div>
+              <div class="sig-stats">
+                <div>
+                  <div class="sig-stat-value">$400M+</div>
+                  <div class="sig-stat-label">Value Delivered</div>
+                </div>
+                <div>
+                  <div class="sig-stat-value">27K+</div>
+                  <div class="sig-stat-label">AI Users Enabled</div>
+                </div>
+                <div>
+                  <div class="sig-stat-value">16+</div>
+                  <div class="sig-stat-label">Years Experience</div>
+                </div>
+                <div>
+                  <div class="sig-stat-value">F500</div>
+                  <div class="sig-stat-label">Enterprise Scale</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- VARIANT C: WITH TAGLINE -->
+  <div class="sig-variant" id="variant-tagline">
+    <div class="email-preview">
+      <div class="email-chrome">
+        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <span class="subject">Re: Digital Transformation — Executive Alignment</span>
+      </div>
+      <div class="email-body">
+        <div class="email-placeholder">
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <div class="sig sig-with-tagline" id="sig-tagline">
+          <div class="sig-bar"></div>
+          <div class="sig-row">
+            <div class="sig-photo">
+              <span class="sig-photo-placeholder">BM</span>
+            </div>
+            <div class="sig-info">
+              <div class="sig-name">Brandon Micci</div>
+              <div class="sig-title">Head of AI Strategy &amp; Business Transformation</div>
+              <div class="sig-subtitle">Enterprise AI &amp; Digital Transformation Executive</div>
+              <div class="sig-contact">
+                <a href="mailto:brandon@brandonmicci.com">brandon@brandonmicci.com</a>
+                <span class="sep">·</span>
+                <span>Washington, D.C. Metro</span>
+              </div>
+              <div class="sig-divider-line"></div>
+              <div class="sig-icons">
+                <a href="mailto:brandon@brandonmicci.com" class="sig-icon-link" title="Email">
+                  <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" fill="none" stroke="currentColor" stroke-width="1.8"/><polyline points="22,6 12,13 2,6" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+                </a>
+                <a href="https://brandonmicci.com" class="sig-icon-link" title="Website">
+                  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.8"/><ellipse cx="12" cy="12" rx="4.5" ry="10" fill="none" stroke="currentColor" stroke-width="1.8"/><line x1="2" y1="12" x2="22" y2="12" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+                </a>
+                <a href="https://linkedin.com/in/brandonmicci" class="sig-icon-link" title="LinkedIn">
+                  <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="2" y="9" width="4" height="12" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="4" cy="4" r="2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+                </a>
+                <a href="https://x.com/brandonmicci" class="sig-icon-link" title="X">
+                  <svg viewBox="0 0 24 24"><path d="M4 4l6.5 8L4 20h2l5.5-6.8L16 20h4l-6.8-8.5L20 4h-2l-5.2 6.3L8 4H4z" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+                </a>
+              </div>
+              <div class="sig-tagline">Scaling AI strategy, governance, and measurable business impact across the Fortune 500.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Actions -->
+  <div class="copy-section">
+    <div class="photo-upload-section">
+      <label class="photo-upload-label" for="photoUpload">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        Upload Your Headshot
+      </label>
+      <input type="file" id="photoUpload" accept="image/*">
+    </div>
+    <button class="copy-btn" onclick="copySignature()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+      Copy Signature HTML
+    </button>
+    <span class="copy-hint">Upload your headshot first, then copy. Paste into Gmail → Settings → Signature, or Outlook signature editor.</span>
   </div>
 </div>
-
-<div class="setup-section">
-  <h2>Features</h2>
-  <div class="step">
-    <ul class="features-list">
-      <li><strong>Animated gradient bars</strong> — cyan-to-blue accent bars matching brandonmicci.com</li>
-      <li><strong>Impact metrics dashboard</strong> — 4 KPI tiles showcasing real career impact</li>
-      <li><strong>Neural network graphic</strong> — animated SVG neural net visualization</li>
-      <li><strong>Pulsing status indicator</strong> — live availability dot with animation</li>
-      <li><strong>Dark mode auto-detect</strong> — adapts colors for dark-mode email clients</li>
-      <li><strong>AI Insight banner</strong> — quarterly-rotating thought leadership quote</li>
-      <li><strong>CTA banner</strong> — promote executive brief, speaking engagements, or initiatives</li>
-      <li><strong>Outlook &amp; MSO compatibility</strong> — conditional comments for Microsoft clients</li>
-      <li><strong>Table-based layout</strong> — maximum email client compatibility</li>
-      <li><strong>Inline SVG icons</strong> — no external image dependencies for icons</li>
-    </ul>
+<!-- Customization -->
+<div class="customize-panel">
+  <h3>Quick Customize</h3>
+  <span class="customize-label">Accent Color</span>
+  <div class="customize-row">
+    <button class="toggle-chip active" onclick="setColor('#0a4d8c', this)">Navy Blue</button>
+    <button class="toggle-chip" onclick="setColor('#1a1a2e', this)">Charcoal</button>
+    <button class="toggle-chip" onclick="setColor('#0f5132', this)">Forest</button>
+    <button class="toggle-chip" onclick="setColor('#6d2077', this)">Executive Purple</button>
+  </div>
+  <span class="customize-label">Photo Shape</span>
+  <div class="customize-row">
+    <button class="toggle-chip active" onclick="setPhotoShape('50%', this)">Circle</button>
+    <button class="toggle-chip" onclick="setPhotoShape('10px', this)">Rounded Square</button>
+    <button class="toggle-chip" onclick="setPhotoShape('4px', this)">Square</button>
   </div>
 </div>
-
 <script>
-function setMode(mode) {
-  const frame = document.getElementById('previewFrame');
-  const btns = document.querySelectorAll('.mode-btn');
-  btns.forEach(b => b.classList.remove('active'));
+// Tab switching
+function showVariant(id) {
+  document.querySelectorAll('.sig-variant').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.variant-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('variant-' + id).classList.add('active');
   event.target.classList.add('active');
-
-  if (mode === 'dark') {
-    frame.className = 'preview-frame dark';
-  } else {
-    frame.className = 'preview-frame light';
+}
+// Photo upload
+document.getElementById('photoUpload').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    document.querySelectorAll('.sig-photo').forEach(photo => {
+      photo.innerHTML = `<img src="${ev.target.result}" alt="Brandon Micci">`;
+    });
+    // Update upload label
+    document.querySelector('.photo-upload-label').innerHTML = `
+      <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+      Photo Added — Change Photo
+    `;
+  };
+  reader.readAsDataURL(file);
+});
+// Color customization
+function setColor(color, btn) {
+  document.documentElement.style.setProperty('--accent', color);
+  document.documentElement.style.setProperty('--gradient-start', color);
+  // Lighten for gradient end
+  const lighter = adjustBrightness(color, 40);
+  document.documentElement.style.setProperty('--gradient-end', lighter);
+  document.documentElement.style.setProperty('--accent-deep', adjustBrightness(color, -20));
+  // Update active state
+  btn.parentElement.querySelectorAll('.toggle-chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+}
+function adjustBrightness(hex, amount) {
+  const num = parseInt(hex.slice(1), 16);
+  let r = Math.min(255, Math.max(0, (num >> 16) + amount));
+  let g = Math.min(255, Math.max(0, ((num >> 8) & 0x00FF) + amount));
+  let b = Math.min(255, Math.max(0, (num & 0x0000FF) + amount));
+  return '#' + (0x1000000 + r * 0x10000 + g * 0x100 + b).toString(16).slice(1);
+}
+// Photo shape
+function setPhotoShape(radius, btn) {
+  document.querySelectorAll('.sig-photo').forEach(p => {
+    p.style.borderRadius = radius;
+  });
+  btn.parentElement.querySelectorAll('.toggle-chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+}
+// Copy signature
+function copySignature() {
+  const active = document.querySelector('.sig-variant.active');
+  const sigEl = active.querySelector('.sig');
+  const temp = document.createElement('div');
+  temp.innerHTML = sigEl.outerHTML;
+  temp.style.position = 'fixed';
+  temp.style.left = '-9999px';
+  document.body.appendChild(temp);
+  const range = document.createRange();
+  range.selectNodeContents(temp);
+  const selection = window.getSelection();
+  selection.removeAllRanges();
+  selection.addRange(range);
+  try {
+    document.execCommand('copy');
+    const btn = document.querySelector('.copy-btn');
+    btn.classList.add('copied');
+    btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!`;
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy Signature HTML`;
+    }, 2000);
+  } catch (e) {
+    console.error('Copy failed', e);
   }
+  document.body.removeChild(temp);
+  selection.removeAllRanges();
 }
 </script>
-
 </body>
 </html>
