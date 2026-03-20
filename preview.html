@@ -633,6 +633,11 @@
   </div>
 </div>
 <script>
+// ─── State tracking ───
+let currentAccent = '#0a4d8c';
+let currentPhotoRadius = '50%';
+let uploadedPhotoDataURL = null;
+
 // Tab switching
 function showVariant(id) {
   document.querySelectorAll('.sig-variant').forEach(v => v.classList.remove('active'));
@@ -646,6 +651,7 @@ document.getElementById('photoUpload').addEventListener('change', function(e) {
   if (!file) return;
   const reader = new FileReader();
   reader.onload = function(ev) {
+    uploadedPhotoDataURL = ev.target.result;
     document.querySelectorAll('.sig-photo').forEach(photo => {
       photo.innerHTML = `<img src="${ev.target.result}" alt="Brandon Micci">`;
     });
@@ -659,13 +665,12 @@ document.getElementById('photoUpload').addEventListener('change', function(e) {
 });
 // Color customization
 function setColor(color, btn) {
+  currentAccent = color;
   document.documentElement.style.setProperty('--accent', color);
   document.documentElement.style.setProperty('--gradient-start', color);
-  // Lighten for gradient end
   const lighter = adjustBrightness(color, 40);
   document.documentElement.style.setProperty('--gradient-end', lighter);
   document.documentElement.style.setProperty('--accent-deep', adjustBrightness(color, -20));
-  // Update active state
   btn.parentElement.querySelectorAll('.toggle-chip').forEach(c => c.classList.remove('active'));
   btn.classList.add('active');
 }
@@ -678,28 +683,159 @@ function adjustBrightness(hex, amount) {
 }
 // Photo shape
 function setPhotoShape(radius, btn) {
+  currentPhotoRadius = radius;
   document.querySelectorAll('.sig-photo').forEach(p => {
     p.style.borderRadius = radius;
   });
   btn.parentElement.querySelectorAll('.toggle-chip').forEach(c => c.classList.remove('active'));
   btn.classList.add('active');
 }
-// Copy signature
+// ─── Build email-safe signature HTML ───
+function buildEmailSignature() {
+  const accent = currentAccent;
+  const accentLight = adjustBrightness(accent, 60);
+  const accentBg = hexToRgba(accent, 0.06);
+  const accentDeep = adjustBrightness(accent, -20);
+  const gradEnd = adjustBrightness(accent, 40);
+  const radius = currentPhotoRadius;
+
+  // Determine active variant
+  const activeVariant = document.querySelector('.sig-variant.active');
+  const variantId = activeVariant ? activeVariant.id : 'variant-clean';
+  const showStats = variantId === 'variant-stats';
+  const showTagline = variantId === 'variant-tagline';
+
+  // Photo cell: uploaded image or initials
+  let photoInner;
+  if (uploadedPhotoDataURL) {
+    photoInner = `<img src="${uploadedPhotoDataURL}" width="64" height="64" alt="Brandon Micci" style="display:block;width:64px;height:64px;border-radius:${radius};object-fit:cover;" />`;
+  } else {
+    photoInner = `<span style="font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:700;color:${accent};line-height:64px;">BM</span>`;
+  }
+
+  // Stats row (only for stats variant)
+  let statsHtml = '';
+  if (showStats) {
+    const stats = [
+      { value: '$400M+', label: 'Value Delivered' },
+      { value: '27K+', label: 'AI Users Enabled' },
+      { value: '16+', label: 'Years Experience' },
+      { value: 'F500', label: 'Enterprise Scale' }
+    ];
+    const statCells = stats.map(s => `
+          <td align="center" style="padding:0 8px;">
+            <span style="font-size:14px;font-weight:700;color:${accentDeep};font-family:Arial,sans-serif;letter-spacing:-0.3px;display:block;line-height:18px;">${s.value}</span>
+            <span style="font-size:8px;font-weight:600;color:#6b6b82;text-transform:uppercase;letter-spacing:0.5px;display:block;line-height:12px;padding-top:1px;">${s.label}</span>
+          </td>`).join('');
+    statsHtml = `
+      <tr>
+        <td style="padding-top:12px;">
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>${statCells}</tr></table>
+        </td>
+      </tr>`;
+  }
+
+  // Tagline row (only for tagline variant)
+  let taglineHtml = '';
+  if (showTagline) {
+    taglineHtml = `
+      <tr>
+        <td style="padding-top:12px;border-top:1px solid #f0f1f5;font-family:Georgia,'Times New Roman',serif;font-size:11.5px;color:#6b6b82;font-style:italic;line-height:1.5;letter-spacing:0.1px;">
+          Scaling AI strategy, governance, and measurable business impact across the Fortune 500.
+        </td>
+      </tr>`;
+  }
+
+  // Social links as styled text buttons (no SVGs — email-safe)
+  const socials = [
+    { href: 'mailto:brandon@brandonmicci.com', label: 'Email' },
+    { href: 'https://brandonmicci.com', label: 'Web' },
+    { href: 'https://linkedin.com/in/brandonmicci', label: 'LinkedIn' },
+    { href: 'https://x.com/brandonmicci', label: 'X' }
+  ];
+  const socialCells = socials.map(s => `
+            <td style="padding-right:6px;">
+              <a href="${s.href}" target="_blank" style="display:inline-block;padding:4px 10px;border:1px solid #e2e5ec;border-radius:4px;font-size:11px;font-weight:500;color:#6b6b82;text-decoration:none;font-family:Arial,sans-serif;">${s.label}</a>
+            </td>`).join('');
+
+  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="520" style="max-width:520px;font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;">
+  <!-- Accent bar -->
+  <tr>
+    <td style="height:3px;font-size:0;line-height:0;background:linear-gradient(90deg,${accent} 0%,${gradEnd} 40%,#f0f1f5 40%);border-radius:2px;" height="3">&zwnj;</td>
+  </tr>
+  <tr>
+    <td style="padding:18px 0 0 0;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+        <tr>
+          <!-- Photo -->
+          <td width="82" valign="top" style="padding-right:18px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td style="width:68px;height:68px;border-radius:${radius};border:2.5px solid ${accent};background-color:#e8f1fa;text-align:center;vertical-align:middle;overflow:hidden;" width="68" height="68">
+                  ${photoInner}
+                </td>
+              </tr>
+            </table>
+          </td>
+          <!-- Info -->
+          <td valign="top">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+              <tr>
+                <td style="font-family:Georgia,'Times New Roman',serif;font-size:19px;font-weight:700;color:#1a1a2e;letter-spacing:-0.3px;line-height:24px;padding-bottom:2px;">Brandon Micci</td>
+              </tr>
+              <tr>
+                <td style="font-size:12px;font-weight:600;color:${accent};line-height:17px;padding-bottom:1px;">Head of AI Strategy &amp; Business Transformation</td>
+              </tr>
+              <tr>
+                <td style="font-size:11px;color:#6b6b82;line-height:15px;padding-bottom:12px;">Enterprise AI &amp; Digital Transformation Executive</td>
+              </tr>
+              <!-- Contact line -->
+              <tr>
+                <td style="font-size:12px;color:#3d3d56;line-height:16px;padding-bottom:12px;">
+                  <a href="mailto:brandon@brandonmicci.com" style="color:${accent};text-decoration:none;">brandon@brandonmicci.com</a>
+                  <span style="color:#e2e5ec;padding:0 6px;">&middot;</span>
+                  <span style="color:#3d3d56;">Washington, D.C. Metro</span>
+                </td>
+              </tr>
+              <!-- Divider -->
+              <tr>
+                <td style="border-top:1px solid #f0f1f5;padding-bottom:12px;font-size:0;line-height:0;" height="1">&zwnj;</td>
+              </tr>
+              <!-- Social links -->
+              <tr>
+                <td>
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                    <tr>${socialCells}
+                    </tr>
+                  </table>
+                </td>
+              </tr>${statsHtml}${taglineHtml}
+            </table>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>`;
+}
+
+function hexToRgba(hex, alpha) {
+  const n = parseInt(hex.slice(1), 16);
+  return 'rgba(' + (n >> 16) + ',' + ((n >> 8) & 0xFF) + ',' + (n & 0xFF) + ',' + alpha + ')';
+}
+
+// Copy signature — writes both rich HTML (for paste into Gmail/Outlook) and plain HTML to clipboard
 function copySignature() {
-  const active = document.querySelector('.sig-variant.active');
-  const sigEl = active.querySelector('.sig');
-  const temp = document.createElement('div');
-  temp.innerHTML = sigEl.outerHTML;
-  temp.style.position = 'fixed';
-  temp.style.left = '-9999px';
-  document.body.appendChild(temp);
-  const range = document.createRange();
-  range.selectNodeContents(temp);
-  const selection = window.getSelection();
-  selection.removeAllRanges();
-  selection.addRange(range);
-  try {
-    document.execCommand('copy');
+  const html = buildEmailSignature();
+  const blob = new Blob([html], { type: 'text/html' });
+  const textBlob = new Blob([html], { type: 'text/plain' });
+
+  navigator.clipboard.write([
+    new ClipboardItem({
+      'text/html': blob,
+      'text/plain': textBlob
+    })
+  ]).then(() => {
     const btn = document.querySelector('.copy-btn');
     btn.classList.add('copied');
     btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!`;
@@ -707,11 +843,29 @@ function copySignature() {
       btn.classList.remove('copied');
       btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy Signature HTML`;
     }, 2000);
-  } catch (e) {
-    console.error('Copy failed', e);
-  }
-  document.body.removeChild(temp);
-  selection.removeAllRanges();
+  }).catch(err => {
+    // Fallback for older browsers
+    const temp = document.createElement('div');
+    temp.innerHTML = html;
+    temp.style.position = 'fixed';
+    temp.style.left = '-9999px';
+    document.body.appendChild(temp);
+    const range = document.createRange();
+    range.selectNodeContents(temp);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    document.execCommand('copy');
+    document.body.removeChild(temp);
+    sel.removeAllRanges();
+    const btn = document.querySelector('.copy-btn');
+    btn.classList.add('copied');
+    btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!`;
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy Signature HTML`;
+    }, 2000);
+  });
 }
 </script>
 </body>
